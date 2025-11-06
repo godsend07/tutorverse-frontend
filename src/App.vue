@@ -6,6 +6,36 @@ const search = ref('');
 const sortKey = ref('topic');
 const sortDir = ref('asc');
 
+const filteredSortedLessons = computed(() => {
+ 
+  let arr = [...lessons.value];
+
+
+  const q = search.value.trim().toLowerCase();
+  if (q) {
+    arr = arr.filter(l =>
+      (l.topic || '').toLowerCase().includes(q) ||
+      (l.location || '').toLowerCase().includes(q) ||
+      String(l.price).includes(q) ||
+      String(l.spaces).includes(q)
+    );
+  }
+
+  const key = sortKey.value; 
+  const dir = sortDir.value === 'asc' ? 1 : -1;
+
+  arr.sort((a, b) => {
+    const va = a[key], vb = b[key];
+    if (typeof va === 'number' && typeof vb === 'number') {
+      return (va - vb) * dir;
+    }
+    return String(va).localeCompare(String(vb)) * dir;
+  });
+
+  return arr;
+});
+
+
 
 const cart = ref([]);
 const cartCount = computed(() => cart.value.reduce((s, i) => s + (i.qty || 0), 0));
@@ -128,9 +158,14 @@ function checkout() {
 
     
     <main class="py-2">
+
       <section v-if="view === 'lessons'">
-  <div class="row g-3">
-    <div class="col-md-4" v-for="lesson in lessons" :key="lesson.id">
+  <p class="text-muted" v-if="filteredSortedLessons.length === 0">
+    No lessons match your search.
+  </p>
+
+  <div class="row g-3" v-else>
+    <div class="col-md-4" v-for="lesson in filteredSortedLessons" :key="lesson.id">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-primary">
@@ -142,10 +177,13 @@ function checkout() {
           <p class="card-text"><strong>Spaces:</strong> {{ lesson.spaces }}</p>
         </div>
         <div class="card-footer bg-white">
-          <button class="btn btn-success w-100" :disabled="lesson.spaces <= 0" @click="addToCart(lesson)">
-  Add to Cart
-</button>
-
+          <button
+            class="btn btn-success w-100"
+            :disabled="lesson.spaces <= 0"
+            @click="addToCart(lesson)"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
@@ -153,10 +191,11 @@ function checkout() {
 </section>
 
 
+
  <section v-else>
   <h2 class="h5 mb-3">Shopping Cart</h2>
 
-  //Empty cart message
+   
   <p class="text-muted" v-if="cart.length === 0">Your cart is empty.</p>
 
   <!-- Cart items -->

@@ -1,38 +1,57 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-const lessons = ref([
-  { id: 1, topic: 'Guitar Basics', location: 'Hendon', price: 55, spaces: 5, icon: 'fa-guitar' },
-  { id: 2, topic: 'French Language', location: 'Colindale', price: 60, spaces: 5, icon: 'fa-language' },
-  { id: 3, topic: 'Creative Writing', location: 'Brent Cross', price: 50, spaces: 5, icon: 'fa-pen-nib' },
-  { id: 4, topic: 'Basketball Coaching', location: 'Golders Green', price: 45, spaces: 5, icon: 'fa-basketball-ball' },
-  { id: 5, topic: 'Robotics Club', location: 'Camden', price: 75, spaces: 5, icon: 'fa-robot' },
-  { id: 6, topic: 'Painting Workshop', location: 'Kilburn', price: 40, spaces: 5, icon: 'fa-paint-brush' },
-  { id: 7, topic: 'Cooking Class', location: 'Wembley', price: 65, spaces: 5, icon: 'fa-utensils' },
-  { id: 8, topic: 'Photography 101', location: 'Euston', price: 70, spaces: 5, icon: 'fa-camera' },
-  { id: 9, topic: 'Drama & Acting', location: 'Barnet', price: 50, spaces: 5, icon: 'fa-theater-masks' },
-  { id: 10, topic: 'Football Skills', location: 'Edgware', price: 45, spaces: 5, icon: 'fa-futbol' }
-]);
+const view = ref('lessons');     
+const search = ref('');
+const sortKey = ref('topic');
+const sortDir = ref('asc');
 
 
-const view = ref('lessons');       
-const search = ref('');            
-const sortKey = ref('topic');      
-const sortDir = ref('asc');       
-
-
-const cart = ref([]);      
+const cart = ref([]);
 const cartCount = computed(() => cart.value.reduce((s, i) => s + (i.qty || 0), 0));
 
 function toggleCart() {
   if (view.value === 'lessons') {
-    if (cart.value.length === 0) return; // disabled when empty
+    if (cart.value.length === 0) return;
     view.value = 'cart';
   } else {
     view.value = 'lessons';
   }
 }
+
+
+const lessons = ref([
+  { id: 1, topic: 'Guitar Basics',      location: 'Hendon',       price: 55, spaces: 5, icon: 'fa-guitar' },
+  { id: 2, topic: 'French Language',    location: 'Colindale',    price: 60, spaces: 5, icon: 'fa-language' },
+  { id: 3, topic: 'Creative Writing',   location: 'Brent Cross',  price: 50, spaces: 5, icon: 'fa-pen-nib' },
+  { id: 4, topic: 'Basketball Coaching',location: 'Golders Green',price: 45, spaces: 5, icon: 'fa-basketball-ball' },
+  { id: 5, topic: 'Robotics Club',      location: 'Camden',       price: 75, spaces: 5, icon: 'fa-robot' },
+  { id: 6, topic: 'Painting Workshop',  location: 'Kilburn',      price: 40, spaces: 5, icon: 'fa-paint-brush' },
+  { id: 7, topic: 'Cooking Class',      location: 'Wembley',      price: 65, spaces: 5, icon: 'fa-utensils' },
+  { id: 8, topic: 'Photography 101',    location: 'Euston',       price: 70, spaces: 5, icon: 'fa-camera' },
+  { id: 9, topic: 'Drama & Acting',     location: 'Barnet',       price: 50, spaces: 5, icon: 'fa-theater-masks' },
+  { id:10, topic: 'Football Skills',    location: 'Edgware',      price: 45, spaces: 5, icon: 'fa-futbol' }
+]);
+
+
+function addToCart(lesson) {
+  if (lesson.spaces <= 0) return;
+  const found = cart.value.find(item => item.id === lesson.id);
+  if (found) found.qty += 1;
+  else cart.value.push({ ...lesson, qty: 1 });
+  lesson.spaces -= 1;
+}
+
+function removeFromCart(item) {
+  const index = cart.value.findIndex(c => c.id === item.id);
+  if (index !== -1) {
+    const lesson = lessons.value.find(l => l.id === item.id);
+    if (lesson) lesson.spaces += cart.value[index].qty;
+    cart.value.splice(index, 1);
+  }
+}
 </script>
+
 
 <template>
   <div class="container">
@@ -93,7 +112,10 @@ function toggleCart() {
           <p class="card-text"><strong>Spaces:</strong> {{ lesson.spaces }}</p>
         </div>
         <div class="card-footer bg-white">
-          <button class="btn btn-success w-100">Add to Cart</button>
+          <button class="btn btn-success w-100" :disabled="lesson.spaces <= 0" @click="addToCart(lesson)">
+  Add to Cart
+</button>
+
         </div>
       </div>
     </div>

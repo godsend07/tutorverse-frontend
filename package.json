@@ -1,7 +1,9 @@
 {
-  "name": "tutorverse",
+   "name": "tutorverse",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
+  "description": "TutorVerse — after-school classes & activities (CST3144 Frontend)",
+  "author": "Saif",
   "type": "module",
   "scripts": {
     "dev": "vite",

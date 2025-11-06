@@ -1,6 +1,20 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+const lessons = ref([
+  { id: 1, topic: 'Guitar Basics', location: 'Hendon', price: 55, spaces: 5, icon: 'fa-guitar' },
+  { id: 2, topic: 'French Language', location: 'Colindale', price: 60, spaces: 5, icon: 'fa-language' },
+  { id: 3, topic: 'Creative Writing', location: 'Brent Cross', price: 50, spaces: 5, icon: 'fa-pen-nib' },
+  { id: 4, topic: 'Basketball Coaching', location: 'Golders Green', price: 45, spaces: 5, icon: 'fa-basketball-ball' },
+  { id: 5, topic: 'Robotics Club', location: 'Camden', price: 75, spaces: 5, icon: 'fa-robot' },
+  { id: 6, topic: 'Painting Workshop', location: 'Kilburn', price: 40, spaces: 5, icon: 'fa-paint-brush' },
+  { id: 7, topic: 'Cooking Class', location: 'Wembley', price: 65, spaces: 5, icon: 'fa-utensils' },
+  { id: 8, topic: 'Photography 101', location: 'Euston', price: 70, spaces: 5, icon: 'fa-camera' },
+  { id: 9, topic: 'Drama & Acting', location: 'Barnet', price: 50, spaces: 5, icon: 'fa-theater-masks' },
+  { id: 10, topic: 'Football Skills', location: 'Edgware', price: 45, spaces: 5, icon: 'fa-futbol' }
+]);
+
+
 const view = ref('lessons');       
 const search = ref('');            
 const sortKey = ref('topic');      
@@ -66,9 +80,26 @@ function toggleCart() {
     
     <main class="py-2">
       <section v-if="view === 'lessons'">
-        <p class="text-muted">Lessons will appear here (list, sort, search). Coming next.</p>
-        
-      </section>
+  <div class="row g-3">
+    <div class="col-md-4" v-for="lesson in lessons" :key="lesson.id">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">
+            <i class="fa-solid" :class="lesson.icon"></i>
+            {{ lesson.topic }}
+          </h5>
+          <p class="card-text mb-1"><strong>Location:</strong> {{ lesson.location }}</p>
+          <p class="card-text mb-1"><strong>Price:</strong> £{{ lesson.price }}</p>
+          <p class="card-text"><strong>Spaces:</strong> {{ lesson.spaces }}</p>
+        </div>
+        <div class="card-footer bg-white">
+          <button class="btn btn-success w-100">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       <section v-else>
         <h2 class="h5 mb-2">Shopping Cart</h2>

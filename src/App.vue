@@ -123,11 +123,50 @@ function removeFromCart(item) {
 </section>
 
 
-      <section v-else>
-        <h2 class="h5 mb-2">Shopping Cart</h2>
-        <p class="text-muted" v-if="cart.length === 0">No items yet.</p>
-     
-      </section>
+ <section v-else>
+  <h2 class="h5 mb-3">Shopping Cart</h2>
+
+  <!-- Empty cart message -->
+  <p class="text-muted" v-if="cart.length === 0">Your cart is empty.</p>
+
+  <!-- Cart items -->
+  <div v-else class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Lesson</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in cart" :key="item.id">
+          <td>
+            <i class="fa-solid" :class="item.icon"></i>
+            {{ item.topic }}
+          </td>
+          <td>{{ item.location }}</td>
+          <td>£{{ item.price }}</td>
+          <td>{{ item.qty }}</td>
+          <td>£{{ item.price * item.qty }}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" @click="removeFromCart(item)">
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="fw-bold text-end mt-3">
+    Total Price: £{{ cart.reduce((sum, i) => sum + i.price * i.qty, 0) }}
+  </p>
+</section>
+
     </main>
   </div>
 </template>

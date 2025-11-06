@@ -50,12 +50,42 @@ function removeFromCart(item) {
     cart.value.splice(index, 1);
   }
 }
+
+
+const name = ref('');
+const phone = ref('');
+const checkoutMessage = ref('');
+
+
+const nameValid = computed(() => /^[A-Za-z\s]+$/.test(name.value));
+const phoneValid = computed(() => /^[0-9]+$/.test(phone.value));
+
+function checkout() {
+  if (!nameValid.value || !phoneValid.value) return;
+
+  checkoutMessage.value = `✅ Thank you, ${name.value}! Your order has been submitted successfully.`;
+
+
+  cart.value = [];
+  name.value = '';
+  phone.value = '';
+
+
+  view.value = 'cart';
+
+
+  setTimeout(() => {
+    checkoutMessage.value = '';
+  }, 4000);
+}
+
+
 </script>
 
 
 <template>
   <div class="container">
-    <!-- Header -->
+    
     <header class="d-flex flex-wrap align-items-center justify-content-between py-3">
       <div class="d-flex align-items-center gap-2">
         <i class="fa-solid fa-graduation-cap"></i>
@@ -126,7 +156,7 @@ function removeFromCart(item) {
  <section v-else>
   <h2 class="h5 mb-3">Shopping Cart</h2>
 
-  <!-- Empty cart message -->
+  //Empty cart message
   <p class="text-muted" v-if="cart.length === 0">Your cart is empty.</p>
 
   <!-- Cart items -->
@@ -165,6 +195,46 @@ function removeFromCart(item) {
   <p class="fw-bold text-end mt-3">
     Total Price: £{{ cart.reduce((sum, i) => sum + i.price * i.qty, 0) }}
   </p>
+
+ 
+<div class="mt-4 border-top pt-3">
+  <h3 class="h6 mb-3">Checkout</h3>
+
+  <div class="mb-3">
+    <label class="form-label">Name</label>
+    <input
+      type="text"
+      class="form-control"
+      v-model="name"
+      placeholder="Enter your name"
+      :class="{ 'is-invalid': name && !nameValid }"
+    />
+    <div class="invalid-feedback">Name must contain letters only.</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Phone</label>
+    <input
+      type="text"
+      class="form-control"
+      v-model="phone"
+      placeholder="Enter your phone number"
+      :class="{ 'is-invalid': phone && !phoneValid }"
+    />
+    <div class="invalid-feedback">Phone must contain numbers only.</div>
+  </div>
+
+  <button
+    class="btn btn-primary"
+    :disabled="!nameValid || !phoneValid || cart.length === 0"
+    @click="checkout"
+  >
+    Checkout
+  </button>
+
+  <p v-if="checkoutMessage" class="alert alert-success mt-3">{{ checkoutMessage }}</p>
+</div>
+
 </section>
 
     </main>

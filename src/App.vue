@@ -69,7 +69,8 @@ function addToCart(lesson) {
   const found = cart.value.find(item => item.id === lesson.id);
   if (found) found.qty += 1;
   else cart.value.push({ ...lesson, qty: 1 });
-  lesson.spaces -= 1;
+ safeDecrementSpaces(lesson);
+;
 }
 
 function removeFromCart(item) {
@@ -89,6 +90,22 @@ const checkoutMessage = ref('');
 
 const nameValid = computed(() => /^[A-Za-z\s]+$/.test(name.value));
 const phoneValid = computed(() => /^[0-9]+$/.test(phone.value));
+
+
+const totalPrice = computed(() =>
+  cart.value.reduce((sum, i) => sum + i.price * i.qty, 0)
+);
+
+
+function money(n) {
+  return `£${n}`;
+}
+
+
+function safeDecrementSpaces(lesson) {
+  if (lesson.spaces > 0) lesson.spaces -= 1;
+}
+
 
 function checkout() {
   if (!nameValid.value || !phoneValid.value) return;
@@ -142,17 +159,18 @@ function checkout() {
         </select>
 
         <button
-          class="btn btn-primary position-relative"
-          :disabled="cart.length === 0 && view === 'lessons'"
-          @click="toggleCart"
-          title="Shopping Cart"
-        >
-          <i class="fa fa-shopping-cart"></i>
-          <span class="ms-1">Cart</span>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ cartCount }}
-          </span>
-        </button>
+  class="btn btn-primary position-relative"
+  :disabled="view === 'lessons' && cart.length === 0"
+  @click="toggleCart"
+  :title="view === 'lessons' ? (cart.length === 0 ? 'Cart is empty' : 'Open cart') : 'Back to lessons'"
+>
+  <i class="fa fa-shopping-cart"></i>
+  <span class="ms-1">{{ view === 'lessons' ? 'Cart' : 'Back' }}</span>
+  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    {{ cartCount }}
+  </span>
+</button>
+
       </div>
     </header>
 
@@ -177,13 +195,14 @@ function checkout() {
           <p class="card-text"><strong>Spaces:</strong> {{ lesson.spaces }}</p>
         </div>
         <div class="card-footer bg-white">
-          <button
-            class="btn btn-success w-100"
-            :disabled="lesson.spaces <= 0"
-            @click="addToCart(lesson)"
-          >
-            Add to Cart
-          </button>
+         <button
+  class="btn btn-success w-100"
+  :disabled="lesson.spaces <= 0"
+  @click="addToCart(lesson)"
+>
+  {{ lesson.spaces > 0 ? 'Add to Cart' : 'Full' }}
+</button>
+
         </div>
       </div>
     </div>
@@ -232,8 +251,9 @@ function checkout() {
   </div>
 
   <p class="fw-bold text-end mt-3">
-    Total Price: £{{ cart.reduce((sum, i) => sum + i.price * i.qty, 0) }}
-  </p>
+  Total Price: {{ money(totalPrice) }}
+</p>
+
 
  
 <div class="mt-4 border-top pt-3">

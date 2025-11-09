@@ -1,15 +1,38 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 
-const view = ref('lessons');     
+//config
+const API = 'http://localhost:8080';
+
+// view + controls
+const view = ref('lessons');    
 const search = ref('');
 const sortKey = ref('topic');
 const sortDir = ref('asc');
 
-const filteredSortedLessons = computed(() => {
- 
-  let arr = [...lessons.value];
+//lessons state + loaders
+const lessons = ref([]);
 
+// fetch lessons
+async function loadLessons(q = '') {
+  try {
+    const url = q
+      ? `${API}/search?q=${encodeURIComponent(q)}`
+      : `${API}/lessons`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to fetch lessons');
+    const data = await res.json();
+
+    // Map Mongo _id → id so the rest of the app can use "id"
+    lessons.value = data.map(l => ({ ...l, id: l._id || l.id }));
+  } catch (err) {
+    console.error('Fetch lessons error:', err);
+  }
+}
+
+// computed list (sort + fallback local filter)
+const filteredSortedLessons = computed(() => {
+  let arr = [...lessons.value];
 
   const q = search.value.trim().toLowerCase();
   if (q) {
@@ -21,7 +44,7 @@ const filteredSortedLessons = computed(() => {
     );
   }
 
-  const key = sortKey.value; 
+  const key = sortKey.value;
   const dir = sortDir.value === 'asc' ? 1 : -1;
 
   arr.sort((a, b) => {
@@ -35,8 +58,7 @@ const filteredSortedLessons = computed(() => {
   return arr;
 });
 
-
-
+//cart + actions
 const cart = ref([]);
 const cartCount = computed(() => cart.value.reduce((s, i) => s + (i.qty || 0), 0));
 
@@ -49,18 +71,16 @@ function toggleCart() {
   }
 }
 
-
-// fetch lessons when app starts
-loadLessons();
-
+function safeDecrementSpaces(lesson) {
+  if (lesson.spaces > 0) lesson.spaces -= 1;
+}
 
 function addToCart(lesson) {
   if (lesson.spaces <= 0) return;
   const found = cart.value.find(item => item.id === lesson.id);
   if (found) found.qty += 1;
   else cart.value.push({ ...lesson, qty: 1 });
- safeDecrementSpaces(lesson);
-;
+  safeDecrementSpaces(lesson);
 }
 
 function removeFromCart(item) {
@@ -72,30 +92,19 @@ function removeFromCart(item) {
   }
 }
 
-
+//checkout + validation
 const name = ref('');
 const phone = ref('');
 const checkoutMessage = ref('');
 
-
 const nameValid = computed(() => /^[A-Za-z\s]+$/.test(name.value));
 const phoneValid = computed(() => /^[0-9]+$/.test(phone.value));
-
 
 const totalPrice = computed(() =>
   cart.value.reduce((sum, i) => sum + i.price * i.qty, 0)
 );
 
-
-function money(n) {
-  return `£${n}`;
-}
-
-
-function safeDecrementSpaces(lesson) {
-  if (lesson.spaces > 0) lesson.spaces -= 1;
-}
-
+function money(n) { return `£${n}`; }
 
 async function checkout() {
   if (!nameValid.value || !phoneValid.value) return;
@@ -104,27 +113,27 @@ async function checkout() {
     name: name.value,
     phone: phone.value,
     items: cart.value.map(item => ({
-      _id: item._id || item.id,
+      _id: item.id,
       qty: item.qty
     }))
   };
 
   try {
-    const res = await fetch('http://localhost:8080/orders', {
+    const res = await fetch(`${API}/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order)
     });
-
     const data = await res.json();
-
     if (!res.ok) throw new Error(data.error || 'Failed to submit order');
 
     checkoutMessage.value = `✅ Thank you, ${name.value}! Your order was submitted successfully.`;
     cart.value = [];
     name.value = '';
     phone.value = '';
-    loadLessons(); // reload updated spaces
+
+  
+    await loadLessons(search.value);
   } catch (err) {
     console.error('Checkout error:', err.message);
     checkoutMessage.value = '❌ Failed to submit order.';
@@ -134,22 +143,13 @@ async function checkout() {
   setTimeout(() => (checkoutMessage.value = ''), 4000);
 }
 
-// fetch lessons when app starts
-loadLessons();
-
-// when user types in search box, fetch results from backend
+//live backend search
 watch(search, async (newVal) => {
-  try {
-    const res = await fetch(`http://localhost:8080/search?q=${encodeURIComponent(newVal)}`);
-    lessons.value = await res.json();
-  } catch (err) {
-    console.error('Search fetch error:', err.message);
-  }
+  await loadLessons(newVal);
 });
 
 
-
-
+loadLessons();
 </script>
 
 

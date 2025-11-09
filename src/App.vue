@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const view = ref('lessons');     
 const search = ref('');
@@ -50,18 +50,8 @@ function toggleCart() {
 }
 
 
-const lessons = ref([
-  { id: 1, topic: 'Guitar Basics',      location: 'Hendon',       price: 55, spaces: 5, icon: 'fa-guitar' },
-  { id: 2, topic: 'French Language',    location: 'Colindale',    price: 60, spaces: 5, icon: 'fa-language' },
-  { id: 3, topic: 'Creative Writing',   location: 'Brent Cross',  price: 50, spaces: 5, icon: 'fa-pen-nib' },
-  { id: 4, topic: 'Basketball Coaching',location: 'Golders Green',price: 45, spaces: 5, icon: 'fa-basketball-ball' },
-  { id: 5, topic: 'Robotics Club',      location: 'Camden',       price: 75, spaces: 5, icon: 'fa-robot' },
-  { id: 6, topic: 'Painting Workshop',  location: 'Kilburn',      price: 40, spaces: 5, icon: 'fa-paint-brush' },
-  { id: 7, topic: 'Cooking Class',      location: 'Wembley',      price: 65, spaces: 5, icon: 'fa-utensils' },
-  { id: 8, topic: 'Photography 101',    location: 'Euston',       price: 70, spaces: 5, icon: 'fa-camera' },
-  { id: 9, topic: 'Drama & Acting',     location: 'Barnet',       price: 50, spaces: 5, icon: 'fa-theater-masks' },
-  { id:10, topic: 'Football Skills',    location: 'Edgware',      price: 45, spaces: 5, icon: 'fa-futbol' }
-]);
+// fetch lessons when app starts
+loadLessons();
 
 
 function addToCart(lesson) {
@@ -107,24 +97,57 @@ function safeDecrementSpaces(lesson) {
 }
 
 
-function checkout() {
+async function checkout() {
   if (!nameValid.value || !phoneValid.value) return;
 
-  checkoutMessage.value = `✅ Thank you, ${name.value}! Your order has been submitted successfully.`;
+  const order = {
+    name: name.value,
+    phone: phone.value,
+    items: cart.value.map(item => ({
+      _id: item._id || item.id,
+      qty: item.qty
+    }))
+  };
 
+  try {
+    const res = await fetch('http://localhost:8080/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
 
-  cart.value = [];
-  name.value = '';
-  phone.value = '';
+    const data = await res.json();
 
+    if (!res.ok) throw new Error(data.error || 'Failed to submit order');
+
+    checkoutMessage.value = `✅ Thank you, ${name.value}! Your order was submitted successfully.`;
+    cart.value = [];
+    name.value = '';
+    phone.value = '';
+    loadLessons(); // reload updated spaces
+  } catch (err) {
+    console.error('Checkout error:', err.message);
+    checkoutMessage.value = '❌ Failed to submit order.';
+  }
 
   view.value = 'cart';
-
-
-  setTimeout(() => {
-    checkoutMessage.value = '';
-  }, 4000);
+  setTimeout(() => (checkoutMessage.value = ''), 4000);
 }
+
+// fetch lessons when app starts
+loadLessons();
+
+// when user types in search box, fetch results from backend
+watch(search, async (newVal) => {
+  try {
+    const res = await fetch(`http://localhost:8080/search?q=${encodeURIComponent(newVal)}`);
+    lessons.value = await res.json();
+  } catch (err) {
+    console.error('Search fetch error:', err.message);
+  }
+});
+
+
 
 
 </script>

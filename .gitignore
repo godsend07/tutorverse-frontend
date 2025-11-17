@@ -1,0 +1,21 @@
+# Node / Vite
+node_modules/
+dist/
+.cache/
+.temp/
+
+# Env & logs
+.env
+*.log
+npm-debug.log*
+yarn-*.log*
+pnpm-debug.log*
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local overrides
+*.local

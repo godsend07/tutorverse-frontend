@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 
-//config
-const API = 'http://localhost:8080';
+// config
+const API = 'https://tutorverse-backend-o69h.onrender.com';
 
 // view + controls
 const view = ref('lessons');    
@@ -10,16 +10,13 @@ const search = ref('');
 const sortKey = ref('topic');
 const sortDir = ref('asc');
 
-//lessons state + loaders
+// lessons state + loaders
 const lessons = ref([]);
 
-// fetch lessons
-async function loadLessons(q = '') {
+// fetch lessons from Render backend
+async function loadLessons() {
   try {
-    const url = q
-      ? `${API}/search?q=${encodeURIComponent(q)}`
-      : `${API}/lessons`;
-    const res = await fetch(url);
+    const res = await fetch(`${API}/lessons`);
     if (!res.ok) throw new Error('Failed to fetch lessons');
     const data = await res.json();
 
@@ -29,6 +26,7 @@ async function loadLessons(q = '') {
     console.error('Fetch lessons error:', err);
   }
 }
+
 
 // computed list (sort + fallback local filter)
 const filteredSortedLessons = computed(() => {

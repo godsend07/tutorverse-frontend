@@ -131,7 +131,7 @@ async function checkout() {
     phone.value = '';
 
   
-    await loadLessons(search.value);
+    await loadLessons();
   } catch (err) {
     console.error('Checkout error:', err.message);
     checkoutMessage.value = '❌ Failed to submit order.';
@@ -141,10 +141,7 @@ async function checkout() {
   setTimeout(() => (checkoutMessage.value = ''), 4000);
 }
 
-//live backend search
-watch(search, async (newVal) => {
-  await loadLessons(newVal);
-});
+
 
 
 loadLessons();

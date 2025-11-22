@@ -1,13 +1,8 @@
 TutorVerse – CST3144 Full Stack Development Coursework
 
 This project was created for CST3144 – Full Stack Development.
-It has two parts:
-
-A Vue.js frontend (lesson browsing + booking/cart system)
-
-An Express.js backend connected to MongoDB Atlas
-
-The frontend is hosted on GitHub Pages and it fetches data from the backend deployed on Render.
+It includes a Vue.js frontend and an Express.js backend, both connected to MongoDB Atlas.
+The frontend is hosted on GitHub Pages, and it communicates with the backend deployed on Render.
 
 Live Demo
 
@@ -17,46 +12,43 @@ https://godsend07.github.io/tutorverse-frontend/
 GitHub Repositories
 Frontend (Vue.js)
 
-Repo:
-https://github.com/godsend07/tutorverse-frontend
+Repo: https://github.com/godsend07/tutorverse-frontend
 
-Live Deployment:
-https://godsend07.github.io/tutorverse-frontend/
+Live Deployment: https://godsend07.github.io/tutorverse-frontend/
 
 Backend (Express.js)
 
-Repo:
-https://github.com/godsend07/tutorverse-backend
+Repo: https://github.com/godsend07/tutorverse-backend
 
-Live API (Render):
-https://tutorverse-backend-o69h.onrender.com/lessons
+Live API (Render): https://tutorverse-backend-o69h.onrender.com/lessons
 
-Project Structure (For ZIP Submission)
+Project Structure (ZIP Submission)
 CST3144/
   TutorVerse/        ← Vue.js frontend (without node_modules)
   ExpressApp/        ← Express.js backend (without node_modules)
   README.md
 
 
-Before zipping, remove all node_modules folders.
+Note: Remove all node_modules before creating the ZIP file.
 
 Frontend (Vue.js)
 
-Built using Vue 3 – Composition API.
+Built using Vue 3 (Composition API).
+The frontend handles lesson display, searching, sorting, and a simple cart-style booking system.
 
-Main Features
+Key Features
 
-Lesson list with search and sort
+Lesson list with search and sorting
 
-Simple shopping-cart style booking
+Basic shopping cart behaviour
 
-Form validation (name + phone)
+Form validation (name, phone)
 
-Fetches lessons from the live backend
+Fetches live data from the Render backend
 
-Clean, easy UI layout
+Simple, clean UI layout
 
-Run the Frontend Locally
+Run Locally
 cd TutorVerse
 npm install
 npm run dev
@@ -67,30 +59,19 @@ npm run deploy
 
 Backend (Express.js)
 
-Backend built with Node.js + Express.
-
-Key Points
-
-MongoDB Atlas database
-
-Uses the MongoDB native driver
-
-CORS enabled for GitHub Pages
-
-Clean and simple routing
+The backend handles API routes, database communication, and booking creation.
+It uses the MongoDB native driver, CORS, and a clean folder structure.
 
 API Endpoints
-Get all lessons
 GET /lessons
 
+Fetches all lessons from MongoDB.
 
-Returns all lessons from the database.
-
-Create an order
 POST /orders
 
+Creates a new order.
 
-Example request body:
+Example body:
 
 {
   "name": "John",
@@ -100,34 +81,70 @@ Example request body:
   ]
 }
 
-Run the Backend Locally
+Run Backend Locally
 cd ExpressApp
 npm install
 node server.js
 
-Example .env (Not included in submission)
-MONGODB_URI= mongodb+srv://tutorverse_user:Tutor12345@tutorverse.mugyogj.mongodb.net/?retryWrites=true&w=majority
+Example .env (Not included in ZIP)
+MONGODB_URI=your-mongodb-connection-string
 DB_NAME=tutorverse_db
 PORT=8080
 
 Hosting Summary
 
-Frontend (GitHub Pages):
+Frontend: GitHub Pages
 https://godsend07.github.io/tutorverse-frontend/
 
-Backend (Render):
+Backend: Render (Public API)
 https://tutorverse-backend-o69h.onrender.com/lessons
 
-Coursework Requirements Covered
+Database: MongoDB Atlas (Cloud)
 
-Separate GitHub repos for frontend & backend
+Coursework Requirements (Completed)
 
-Frontend hosted on GitHub Pages
+This project meets all CST3144 requirements:
 
-Backend hosted on Render
+1. Separate Frontend & Backend Repositories
 
-Both apps communicate over a live API
+Both parts have their own public GitHub repos
 
-MongoDB Atlas database connected
+Code is structured and easy to navigate
 
-ZIP submission contains both apps + README
+2. Fully Deployed Application
+
+Frontend deployed on GitHub Pages
+
+Backend deployed on Render
+
+Frontend communicates with the live backend successfully
+
+3. Database Integration
+
+MongoDB Atlas used for lessons and orders
+
+Backend connects using environment variables
+
+API returns JSON data for the frontend
+
+4. Submission-Ready ZIP
+
+Contains both applications
+
+No node_modules included
+
+Includes this README for guidance
+
+5. Functional Frontend Features
+
+Search, sort, booking/cart logic, form validation
+
+Clean and simple UI appropriate for coursework
+
+6. Functional Backend Features
+
+API routes implemented
+
+Data fetched from MongoDB
+
+Orders stored correctly

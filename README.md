@@ -1,95 +1,97 @@
-# TutorVerse – CST3144 Full Stack Development
+TutorVerse – CST3144 Full Stack Development Coursework
 
-This project is my coursework for **CST3144 – Full Stack Development**.  
-It includes a Vue.js frontend and an Express.js backend connected to MongoDB Atlas.  
-The frontend is deployed on GitHub Pages and fetches lesson data from my Render backend.
+This project was created for CST3144 – Full Stack Development.
+It has two parts:
 
----
+A Vue.js frontend (lesson browsing + booking/cart system)
 
-## Live Demo (Frontend)
+An Express.js backend connected to MongoDB Atlas
 
-**GitHub Pages:**  
+The frontend is hosted on GitHub Pages and it fetches data from the backend deployed on Render.
+
+Live Demo
+
+Frontend (GitHub Pages):
 https://godsend07.github.io/tutorverse-frontend/
 
----
+GitHub Repositories
+Frontend (Vue.js)
 
-## GitHub Repositories
+Repo:
+https://github.com/godsend07/tutorverse-frontend
 
-### Frontend (Vue.js App)
+Live Deployment:
+https://godsend07.github.io/tutorverse-frontend/
 
-- GitHub Repo:  
-  https://github.com/godsend07/tutorverse-frontend  
+Backend (Express.js)
 
-- GitHub Pages Deployment:  
-  https://godsend07.github.io/tutorverse-frontend/
+Repo:
+https://github.com/godsend07/tutorverse-backend
 
-### Backend (Express.js App)
+Live API (Render):
+https://tutorverse-backend-o69h.onrender.com/lessons
 
-- GitHub Repo:  
-  https://github.com/godsend07/tutorverse-backend  
-
-- Render Deployment (API):  
-  https://tutorverse-backend-o69h.onrender.com/lessons
-
----
-
-## Project Structure (ZIP Submission)
-
-```text
+Project Structure (For ZIP Submission)
 CST3144/
-  TutorVerse/      ← Vue.js frontend (no node_modules)
-  ExpressApp/      ← Express.js backend (no node_modules)
+  TutorVerse/        ← Vue.js frontend (without node_modules)
+  ExpressApp/        ← Express.js backend (without node_modules)
   README.md
-Before creating the ZIP file, remove all node_modules folders.
+
+
+Before zipping, remove all node_modules folders.
 
 Frontend (Vue.js)
-Built with Vue 3 (Composition API)
 
-Features:
+Built using Vue 3 – Composition API.
+
+Main Features
 
 Lesson list with search and sort
 
-Shopping cart system
+Simple shopping-cart style booking
 
-Form validation (name and phone)
+Form validation (name + phone)
 
 Fetches lessons from the live backend
 
-Run frontend locally
-bash
-Copy code
+Clean, easy UI layout
+
+Run the Frontend Locally
 cd TutorVerse
 npm install
 npm run dev
-Deploy frontend (GitHub Pages)
-bash
-Copy code
+
+Deploy to GitHub Pages
 npm run build
 npm run deploy
-Backend (Express.js)
-Node.js + Express
 
-MongoDB Atlas using the MongoDB driver
+Backend (Express.js)
+
+Backend built with Node.js + Express.
+
+Key Points
+
+MongoDB Atlas database
+
+Uses the MongoDB native driver
 
 CORS enabled for GitHub Pages
 
-Main endpoints:
+Clean and simple routing
 
 API Endpoints
 Get all lessons
-http
-Copy code
 GET /lessons
-Returns all lessons from the lessons collection.
+
+
+Returns all lessons from the database.
 
 Create an order
-http
-Copy code
 POST /orders
-Example body:
 
-json
-Copy code
+
+Example request body:
+
 {
   "name": "John",
   "phone": "123456",
@@ -97,32 +99,35 @@ Copy code
     { "_id": "lessonIdHere", "qty": 1 }
   ]
 }
-Run backend locally
-bash
-Copy code
+
+Run the Backend Locally
 cd ExpressApp
 npm install
 node server.js
-Example .env file (not included in submission)
-env
-Copy code
-MONGODB_URI=your-mongodb-connection-string
+
+Example .env (Not included in submission)
+MONGODB_URI= mongodb+srv://tutorverse_user:Tutor12345@tutorverse.mugyogj.mongodb.net/?retryWrites=true&w=majority
 DB_NAME=tutorverse_db
 PORT=8080
+
 Hosting Summary
-Frontend: GitHub Pages
+
+Frontend (GitHub Pages):
 https://godsend07.github.io/tutorverse-frontend/
 
-Backend: Render
+Backend (Render):
 https://tutorverse-backend-o69h.onrender.com/lessons
 
 Coursework Requirements Covered
-Separate GitHub repos for frontend and backend
 
-Deployed frontend on GitHub Pages
+Separate GitHub repos for frontend & backend
 
-Frontend fetches data from live backend (Render)
+Frontend hosted on GitHub Pages
 
-Backend hosted on Render with MongoDB Atlas
+Backend hosted on Render
 
-ZIP contains both apps and this README
+Both apps communicate over a live API
+
+MongoDB Atlas database connected
+
+ZIP submission contains both apps + README

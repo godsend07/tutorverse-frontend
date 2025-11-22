@@ -104,7 +104,7 @@ node server.js
 (Not included in submission)
 
 ```
-MONGODB_URI=your-mongodb-connection-string
+MONGODB_URI= mongodb+srv://tutorverse_user:Tutor12345@tutorverse.mugyogj.mongodb.net/?retryWrites=true&w=majority
 DB_NAME=tutorverse_db
 PORT=8080
 ```
